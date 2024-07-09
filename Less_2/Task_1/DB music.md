@@ -1,36 +1,39 @@
-CREATE TABLE music_genres (
-id_genres INTEGER PRIMARY KEY,
-name_generes VARCHAR(50)
+CREATE TABLE IF NOT EXISTS music_genres(
+	id INTEGER PRIMARY KEY,
+	name VARCHAR(50) NOT NULL
 );
-
-CREATE TABLE music_performer (
-id_performer INTEGER PRIMARY KEY,
-id_genres INTEGER NOT NULL REFERENCES music_genres(id_genres),
-name_performer VARCHAR(50)
+CREATE TABLE IF NOT EXISTS music_performer(
+	id INTEGER PRIMARY KEY,
+	name VARCHAR(50) NOT NULL
 );
-
-ALTER TABLE music_genres ADD id_performer INTEGER REFERENCES music_performer(id_performer);
-
-CREATE TABLE album_list (
-id_album INTEGER PRIMARY KEY,
-id_performer INTEGER NOT NULL REFERENCES music_performer(id_performer),
-name_album VARCHAR(50),
-realese_year INTEGER
+CREATE TABLE IF NOT EXISTS album_list(
+	id INTEGER PRIMARY KEY,
+	name VARCHAR(50) NOT NULL,
+	realese_year DATE NOT NULL
 );
-
-ALTER TABLE music_performer ADD id_album INTEGER REFERENCES album_list(id_album);
-
-CREATE TABLE tarck_list (
-id_track INTEGER PRIMARY KEY,
-id_album INTEGER NOT NULL REFERENCES album_list (id_album),
-name_tarck VARCHAR(50),
-duration_track TIME
+CREATE TABLE IF NOT EXISTS track_list(
+	id INTEGER PRIMARY KEY,
+	id_album INTEGER REFERENCES album_list(id),
+	name VARCHAR(50) NOT NULL,
+	duration_track TIME NOT NULL
 );
-
-CREATE TABLE collection_track (
-id_collection INTEGER PRIMARY KEY,
-id_track INTEGER NOT NULL REFERENCES track_list (id_track),
-id_album INTEGER NOT NULL REFERENCES album_list (id_album),
-name_collection VARCHAR(50),
-album_release_year DATE
+CREATE TABLE IF NOT EXISTS collection(
+	id INTEGER PRIMARY KEY,
+	name VARCHAR(50) NOT NULL,
+	realese_year DATE NOT NULL
+);
+CREATE TABLE IF NOT EXISTS genres_artists (
+	id_genre INTEGER REFERENCES music_genres(id),
+	id_performer INTEGER REFERENCES music_performer(id),
+	CONSTRAINT ganres_perfom_pk PRIMARY KEY(id_genre, id_performer)
+);
+CREATE TABLE IF NOT EXISTS performer_album (
+	id_performer INTEGER REFERENCES music_performer(id),
+	id_album INTEGER REFERENCES album_list(id),
+	CONSTRAINT aa_pk PRIMARY KEY(id_performer, id_album)
+);
+CREATE TABLE IF NOT EXISTS collection_track (
+	id_collection INTEGER REFERENCES collection(id),
+	id_track INTEGER REFERENCES track_list(id),
+	CONSTRAINT ct_pk PRIMARY KEY(id_collection, id_track)
 );
